@@ -1,21 +1,85 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import BlogListScreen from './src/screens/BlogListScreen';
+import BlogShowScreen from './src/screens/BlogShowScreen';
+import BlogCreateScreen from './src/screens/BlogCreateScreen';
+import BlogEditScreen from './src/screens/BlogEditScreen';
+import HeaderRight from './src/components/HeaderRight';
+import { Provider as BlogProvider } from './src/context/BlogContextAxios';
 
-export default function App() {
+const App = () => {
+  const Stack = createStackNavigator();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+        name = 'Blog List' 
+        component = {BlogListScreen}
+        options={({navigation, route}) => ({
+          headerTitle: 'Blogs',
+          headerStyle: {
+            backgroundColor: 'orange',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerRight: () => (
+            <HeaderRight iconName = 'plus' onRightPress = {() => navigation.navigate('Blog Create')}/>
+          ),
+        })}
+        />
+        <Stack.Screen 
+        name = 'Blog Show' 
+        component = {BlogShowScreen}
+        options = {({navigation, route}) => ({
+          headerTitle: 'Blog Details',
+          headerStyle: {
+            backgroundColor: 'orange'
+          },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <HeaderRight iconName = 'edit-3' onRightPress = {() => navigation.navigate('Blog Edit', {id: route.params.id})}/>
+          )
+        })}
+        />
+        <Stack.Screen 
+        name = 'Blog Create' 
+        component = {BlogCreateScreen}
+        options = {{
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold'
+          },
+          headerStyle: {
+            backgroundColor: 'orange'
+          }
+        }}
+        />
+        <Stack.Screen 
+        name = 'Blog Edit' 
+        component = {BlogEditScreen}
+        options = {{
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold'
+          },
+          headerStyle: {
+            backgroundColor: 'orange'
+          }
+        }}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default () => {
+  return <BlogProvider>
+    <App/>
+    </BlogProvider>
+}
